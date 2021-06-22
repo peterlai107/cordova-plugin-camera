@@ -59,6 +59,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import android.os.Build;
+import static android.os.Environment.DIRECTORY_PICTURES;
 
 /**
  * This class launches the camera view, allows the user to take a picture, closes the camera view,
@@ -220,7 +222,17 @@ public class CameraLauncher extends CordovaPlugin implements MediaScannerConnect
     //--------------------------------------------------------------------------
 
     private String getTempDirectoryPath() {
-        File cache = cordova.getActivity().getCacheDir();
+        // Peter modified
+        // File cache = cordova.getActivity().getCacheDir();
+
+        File cache = null;
+
+        if (Build.VERSION.SDK_INT >= 30) {
+            cache = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES);
+        } else {
+            cache = cordova.getActivity().getCacheDir();
+        }
+
         // Create the cache directory if it doesn't exist
         cache.mkdirs();
         return cache.getAbsolutePath();
